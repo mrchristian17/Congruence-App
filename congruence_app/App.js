@@ -83,16 +83,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#E5E5E5',
   },
   tasksWrapper: {
-    paddingTop: 80,
+    paddingTop: 20,
     paddingHorizontal: 20,
 
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
+  // sectionTitle: {
+  //   fontSize: 24,
+  //   fontWeight: 'bold',
+  // },
   items: {
-    marginTop: 30,
+    // marginTop: 30,
   },
   writeTaskWrapper: {
     position: 'absolute',
