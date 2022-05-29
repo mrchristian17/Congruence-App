@@ -1,5 +1,8 @@
 import React, {useState} from 'react';
 import { Keyboard, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Task from './components/Task';
 
 export default function App() {
@@ -18,38 +21,59 @@ export default function App() {
     setTaskItems(itemsCopy);
   }
 
-  return (
-    <View style={styles.container}>
-      {/* Today's Task */}
-      <View style={styles.tasksWrapper}>
-        <Text style={styles.sectionTitle}>Committed Actions</Text>
+  // const Stack = createNativeStackNavigator();
+  const Tab = createBottomTabNavigator();
 
-        <View style={styles.items}>
-          {/* This is where the tasks will go */}
-          {
-            taskItems.map((item, index) => {
-              return (
-                <TouchableOpacity key={index} onPress={() => completeTask(index)}>
-                  <Task text={item} />
-                </TouchableOpacity>
-            )})
-          }
-        </View>
-      </View>
-      {/* Add Task */}
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height" }
-        style={styles.writeTaskWrapper}
-      >
-        <TextInput style={styles.input} placeholder={'Add Action'} value={task} onChangeText={text => setTask(text)}/>
+  function CommittedActionsScreen() {
+    return (
+      <View style={styles.container}>
+        {/* Today's Task */}
+        <View style={styles.tasksWrapper}>
+          {/* <Text style={styles.sectionTitle}>Committed Actions</Text> */}
 
-        <TouchableOpacity onPress={() => handleAddTask()}>
-          <View style={styles.addWrapper}>
-            <Text style={styles.addText}>+</Text>
+          <View style={styles.items}>
+            {/* This is where the tasks will go */}
+            {
+              taskItems.map((item, index) => {
+                return (
+                  <TouchableOpacity key={index} onPress={() => completeTask(index)}>
+                    <Task text={item} />
+                  </TouchableOpacity>
+              )})
+            }
           </View>
-        </TouchableOpacity>
-      </KeyboardAvoidingView>
-    </View>
+        </View>
+        {/* Add Task */}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height" }
+          style={styles.writeTaskWrapper}
+        >
+          <TextInput style={styles.input} placeholder={'Add Action'} value={task} onChangeText={text => setTask(text)}/>
+
+          <TouchableOpacity onPress={() => handleAddTask()}>
+            <View style={styles.addWrapper}>
+              <Text style={styles.addText}>+</Text>
+            </View>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
+      </View>
+    );
+  }
+
+  function CongruenceScreen() {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Congruence Screen</Text>
+      </View>
+    );
+  }
+  return (
+    <NavigationContainer>
+      <Tab.Navigator>
+        <Tab.Screen name="Committed Actions" component={CommittedActionsScreen} />
+        <Tab.Screen name="Congruence" component={CongruenceScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
 
@@ -72,7 +96,7 @@ const styles = StyleSheet.create({
   },
   writeTaskWrapper: {
     position: 'absolute',
-    bottom: 60,
+    bottom: 20,
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-around',
