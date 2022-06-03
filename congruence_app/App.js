@@ -1,13 +1,14 @@
 import React, {useState} from 'react';
-import { Keyboard, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useHeaderHeight } from '@react-navigation/elements';
+import { createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Task from './components/Task';
 
-export default function App() {
+const CommittedActionsScreen = () => {
   const [task, setTask] = useState();
   const [taskItems, setTaskItems] = useState([]);
+    
 
   const handleAddTask = () => {
     Keyboard.dismiss()
@@ -20,13 +21,15 @@ export default function App() {
     itemsCopy.splice(index, 1);
     setTaskItems(itemsCopy);
   }
+  return (
+    <View style={styles.container}>
+      <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1
+        }}
+        keyboardShouldPersistTaps='handled'
+      >
 
-  // const Stack = createNativeStackNavigator();
-  const Tab = createBottomTabNavigator();
-
-  function CommittedActionsScreen() {
-    return (
-      <View style={styles.container}>
         {/* Today's Task */}
         <View style={styles.tasksWrapper}>
           {/* <Text style={styles.sectionTitle}>Committed Actions</Text> */}
@@ -43,30 +46,41 @@ export default function App() {
             }
           </View>
         </View>
-        {/* Add Task */}
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height" }
-          style={styles.writeTaskWrapper}
-        >
-          <TextInput style={styles.input} placeholder={'Add Action'} value={task} onChangeText={text => setTask(text)}/>
+        </ScrollView>
+      {/* Add Task */}
+      <View
+        // behavior={Platform.OS === "ios" ? "padding" : "height" }
+        // keyboardVerticalOffset={useHeaderHeight() + 100}
+        style={styles.writeTaskWrapper}
+      >
+        <TextInput 
+          style={styles.input} 
+          placeholder={'Add Action'} 
+          value={task} 
+          onChangeText={text => setTask(text)}
+        />
 
-          <TouchableOpacity onPress={() => handleAddTask()}>
-            <View style={styles.addWrapper}>
-              <Text style={styles.addText}>+</Text>
-            </View>
-          </TouchableOpacity>
-        </KeyboardAvoidingView>
+        <TouchableOpacity onPress={() => handleAddTask()}>
+          <View style={styles.addWrapper}>
+            <Text style={styles.addText}>+</Text>
+          </View>
+        </TouchableOpacity>
       </View>
-    );
-  }
+    </View>
+  );
+}
 
-  function CongruenceScreen() {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Congruence Screen</Text>
-      </View>
-    );
-  }
+const CongruenceScreen = () => {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Congruence Screen</Text>
+    </View>
+  );
+}
+
+export default function App() {
+  // const Stack = createNativeStackNavigator();
+  const Tab = createBottomTabNavigator();
   return (
     <NavigationContainer>
       <Tab.Navigator>
