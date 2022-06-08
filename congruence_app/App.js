@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
-import { Keyboard, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, Keyboard, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { useHeaderHeight } from '@react-navigation/elements';
 import { createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+
+import CalendarPicker from 'react-native-calendar-picker';
 import Task from './components/Task';
 
 const CommittedActionsScreen = () => {
@@ -11,14 +12,20 @@ const CommittedActionsScreen = () => {
     
 
   const handleAddTask = () => {
-    Keyboard.dismiss()
-    setTaskItems([...taskItems, task]);
+    Keyboard.dismiss();
+    const newTask = {task: task, completed: false};
+    setTaskItems([...taskItems, newTask]);
     setTask(null);
   }
 
   const completeTask = (index) => {
+    if (taskItems[index].completed) {
+      taskItems[index].completed = false;
+    } 
+    else {
+      taskItems[index].completed = true;
+    }
     let itemsCopy = [...taskItems];
-    itemsCopy.splice(index, 1);
     setTaskItems(itemsCopy);
   }
   return (
@@ -40,7 +47,7 @@ const CommittedActionsScreen = () => {
               taskItems.map((item, index) => {
                 return (
                   <TouchableOpacity key={index} onPress={() => completeTask(index)}>
-                    <Task text={item} />
+                    <Task text={item.task} completed={item.completed}/>
                   </TouchableOpacity>
               )})
             }
@@ -48,8 +55,8 @@ const CommittedActionsScreen = () => {
         </View>
         </ScrollView>
       {/* Add Task */}
-      <View
-        // behavior={Platform.OS === "ios" ? "padding" : "height" }
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height" }
         // keyboardVerticalOffset={useHeaderHeight() + 100}
         style={styles.writeTaskWrapper}
       >
@@ -65,16 +72,88 @@ const CommittedActionsScreen = () => {
             <Text style={styles.addText}>+</Text>
           </View>
         </TouchableOpacity>
-      </View>
+      </KeyboardAvoidingView>
     </View>
   );
 }
 
 const CongruenceScreen = () => {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Congruence Screen</Text>
-    </View>
+  const [selectedStartDate, setSelectedStartDate] = useState(null);
+  const [selectedEndDate, setSelectedEndDate] = useState(null);
+
+  const onDateChange = (date, type) => {
+    //function to handle the date change
+    if (type === 'END_DATE') {
+      setSelectedEndDate(date);
+    } else {
+      setSelectedEndDate(null);
+      setSelectedStartDate(date);
+    }
+  };
+
+  return ( 
+    <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
+        {/* <Text style={styles.titleStyle}>
+          React Native Calendar Picker
+        </Text> */}
+        <CalendarPicker
+          startFromMonday={true}
+          // allowRangeSelection={true}
+          minDate={new Date(2018, 1, 1)}
+          maxDate={new Date(2050, 6, 3)}
+          weekdays={
+            [
+              'Mon', 
+              'Tue', 
+              'Wed', 
+              'Thur', 
+              'Fri', 
+              'Sat', 
+              'Sun'
+            ]}
+          months={[
+            'January',
+            'Febraury',
+            'March',
+            'April',
+            'May',
+            'June',
+            'July',
+            'August',
+            'September',
+            'October',
+            'November',
+            'December',
+          ]}
+          previousTitle="Previous"
+          nextTitle="Next"
+          todayBackgroundColor="#C0C0C0"
+          selectedDayColor="#008000"
+          // selectedDayTextColor="#000000"
+          scaleFactor={375}
+          textStyle={{
+            fontFamily: 'Cochin',
+            color: '#000000',
+          }}
+          onDateChange={onDateChange}
+        />
+        {/* <View style={styles.textStyle}>
+          <Text style={styles.textStyle}>
+            Selected Start Date :
+          </Text>
+          <Text style={styles.textStyle}>
+            {selectedStartDate ? selectedStartDate.toString() : ''}
+          </Text>
+          <Text style={styles.textStyle}>
+            Selected End Date :
+          </Text>
+          <Text style={styles.textStyle}>
+            {selectedEndDate ? selectedEndDate.toString() : ''}
+          </Text>
+        </View> */}
+      </View>
+    </SafeAreaView>
   );
 }
 

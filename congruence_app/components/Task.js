@@ -1,14 +1,19 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+const completedHandler = (currTask) => {
+    if (!currTask.completed) return styles.incomplete;
+    return styles.complete;
+}
+
 const Task = (props) => {
     return (
         <View style={styles.item}>
             <View style={styles.itemLeft}>
-                <View style={styles.square}></View>
+                <View style={completedHandler(props)}></View>
+
                 <Text style={styles.itemText}>{props.text}</Text>
             </View>
-            {/* <View style={styles.circular}></View> */}
         </View>
     )
 }
@@ -28,10 +33,17 @@ const styles = StyleSheet.create({
         alighItem: 'center',
         flexWrap: 'wrap',
     },
-    square: {
+    incomplete: {
         width: 24, 
         height: 24,
         backgroundColor: '#C0C0C0',
+        borderRadius: 5,
+        marginRight: 15,
+    },
+    complete: {
+        width: 24, 
+        height: 24,
+        backgroundColor: '#008000',
         borderRadius: 5,
         marginRight: 15,
     },
