@@ -3,6 +3,7 @@ import { Keyboard, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput
 import colors from '../assets/colors/colors';
 
 import Task from '../components/Task';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default CommittedActionsScreen = () => {
     const [task, setTask] = useState();
@@ -26,6 +27,13 @@ export default CommittedActionsScreen = () => {
       let itemsCopy = [...taskItems];
       setTaskItems(itemsCopy);
     }
+
+    const deleteTask = (index) => {
+      let itemsCopy = [...taskItems];
+      itemsCopy.splice(index, 1);
+      setTaskItems(itemsCopy)
+    }
+
     return (
       <View style={styles.container}>
         <ScrollView
@@ -45,7 +53,17 @@ export default CommittedActionsScreen = () => {
                 taskItems.map((item, index) => {
                   return (
                     <TouchableOpacity key={index} onPress={() => completeTask(index)}>
-                      <Task text={item.task} completed={item.completed}/>
+                      <Task 
+                        text={item.task} 
+                        completed={item.completed}
+                        deleteButton = {
+                        <TouchableOpacity onPress={() => deleteTask(index)}>
+                          <View style={[styles.actionIcon, {backgroundColor: colors.secondary}]}>
+                            <Icon name="delete" size={20} color= {colors.white} />
+                          </View>
+                        </TouchableOpacity>
+                        }
+                      />
                     </TouchableOpacity>
                 )})
               }
@@ -116,5 +134,14 @@ export default CommittedActionsScreen = () => {
       borderWidth: 1,
     },
     addText: {},
+    actionIcon: {
+      height: 25,
+      width: 25,
+      backgroundColor: colors.white,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginLeft: 5,
+      borderRadius: 3,
+    },
   });
   

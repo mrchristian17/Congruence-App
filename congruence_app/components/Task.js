@@ -17,18 +17,19 @@ const Task = (props) => {
                 <Text style={styles.itemText}>{props.text}</Text>
             </View>
             <View>
-                <TouchableOpacity 
+                {props.deleteButton}
+                {/* <TouchableOpacity 
                 // onPress={() => handleAddTask()}
                 >
                     <View style={[styles.actionIcon, {backgroundColor: colors.secondary}]}>
                         <Icon name="edit" size={20} color= {colors.white} />
                     </View>
-                </TouchableOpacity>
-                <TouchableOpacity>
+                </TouchableOpacity> */}
+                {/* <TouchableOpacity>
                     <View style={[styles.actionIcon, {backgroundColor: colors.secondary}]}>
-                        <Icon name="delete" size={20} color= {colors.white} />
+                        <Icon name="edit" size={20} color= {colors.white} />
                     </View>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
         </View>
     )
