@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const completedHandler = (currTask) => {
     if (!currTask.completed) return styles.incomplete;
@@ -13,6 +14,20 @@ const Task = (props) => {
                 <View style={completedHandler(props)}></View>
 
                 <Text style={styles.itemText}>{props.text}</Text>
+            </View>
+            <View>
+                <TouchableOpacity 
+                // onPress={() => handleAddTask()}
+                >
+                    <View style={[styles.actionIcon, {backgroundColor: '#C0C0C0'}]}>
+                        <Icon name="edit" size={20} color="white" />
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                    <View style={[styles.actionIcon, {backgroundColor: '#C0C0C0'}]}>
+                        <Icon name="delete" size={20} color="white" />
+                    </View>
+                </TouchableOpacity>
             </View>
         </View>
     )
@@ -49,16 +64,16 @@ const styles = StyleSheet.create({
     },
     itemText: {
         maxWidth: '80%', 
-
     },
-    circular: {
-        width: 12,
-        hieght: 12,
-        borderColor: '#C0C0C0',
-        borderWidth: 2,
-        borderRadius: 5,
-    },
-    
+    actionIcon: {
+        height: 25,
+        width: 25,
+        backgroundColor: '#000000',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: 5,
+        borderRadius: 3,
+      },
 });
 
 export default Task;
