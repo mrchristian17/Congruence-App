@@ -51,7 +51,7 @@ export default CongruenceScreen = () => {
             customDatesStyles={customDatesStyles}
             // startFromMonday={true}
             // allowRangeSelection={true}
-            minDate={new Date(2018, 1, 1)}
+            minDate={new Date(2021, 12, 1)}
             maxDate={new Date(2050, 6, 3)}
             weekdays={
               [

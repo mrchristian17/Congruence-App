@@ -3,6 +3,7 @@ import { Keyboard, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput
 import colors from '../assets/colors/colors';
 
 import Task from '../components/Task';
+import IconButton from '../components/CustomButton/IconButton'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default CommittedActionsScreen = () => {
@@ -56,13 +57,7 @@ export default CommittedActionsScreen = () => {
                       <Task 
                         text={item.task} 
                         completed={item.completed}
-                        deleteButton = {
-                        <TouchableOpacity onPress={() => deleteTask(index)}>
-                          <View style={[styles.actionIcon, {backgroundColor: colors.secondary}]}>
-                            <Icon name="delete" size={20} color= {colors.white} />
-                          </View>
-                        </TouchableOpacity>
-                        }
+                        deleteButton = {<IconButton icon="delete" onPress={()=>deleteTask(index)}/>}
                       />
                     </TouchableOpacity>
                 )})
