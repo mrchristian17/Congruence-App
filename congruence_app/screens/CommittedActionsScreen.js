@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import { Keyboard, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import colors from '../assets/colors/colors';
 
 import Task from '../components/Task';
 
@@ -76,17 +77,13 @@ export default CommittedActionsScreen = () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#E5E5E5',
+      backgroundColor: colors.background,
     },
     tasksWrapper: {
       paddingTop: 20,
       paddingHorizontal: 20,
   
     },
-    // sectionTitle: {
-    //   fontSize: 24,
-    //   fontWeight: 'bold',
-    // },
     items: {
       // marginTop: 30,
     },
@@ -102,20 +99,20 @@ export default CommittedActionsScreen = () => {
     input: {
       paddingVertical: 15,
       paddingHorizontal: 15,
-      backgroundColor: '#FFF',
+      backgroundColor: colors.white,
       borderRadius: 60,
-      borderColor: '#C0C0C0',
+      borderColor: colors.secondary,
       borderWidth: 1,
       width: 250,
     },
     addWrapper: {
       width: 60,
       height: 60,
-      backgroundColor: '#FFF',
+      backgroundColor: colors.white,
       borderRadius: 60,
       justifyContent: 'center',
       alignItems: 'center',
-      borderColor: '#C0C0C0',
+      borderColor: colors.secondary,
       borderWidth: 1,
     },
     addText: {},

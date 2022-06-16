@@ -3,8 +3,9 @@ import { SafeAreaView, StyleSheet, View } from 'react-native';
 
 import moment from 'moment';
 import CalendarPicker from 'react-native-calendar-picker';
+import colors from '../assets/colors/colors';
 
-let congruenceDay = [1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1];
+let congruenceDay = [1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0];
 
 export default CongruenceScreen = () => {
     const [selectedStartDate, setSelectedStartDate] = useState(null);
@@ -27,10 +28,10 @@ export default CongruenceScreen = () => {
   
     while(day.add(1, 'day').isSame(today, 'month')) {
       let circleColor = '';
-      let textColor = 'black'
+      let textColor = colors.black;
       if(congruenceDay[i]) {
-        circleColor = '#008000';
-        textColor = 'white'
+        circleColor = colors.primary;
+        textColor = colors.white;
       }
       i+=1;
       customDatesStyles.push({
@@ -78,13 +79,13 @@ export default CongruenceScreen = () => {
             ]}
             previousTitle="Previous"
             nextTitle="Next"
-            todayBackgroundColor="#C0C0C0"
+            todayBackgroundColor={colors.secondary}
             selectedDayColor="transparent"
             // selectedDayTextColor="#fff"
             scaleFactor={375}
             textStyle={{
               fontFamily: 'ArialMT',
-              color: '#000000',
+              color: colors.black,
             }}
             onDateChange={onDateChange}
           />
@@ -95,6 +96,6 @@ export default CongruenceScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#E5E5E5',
+        backgroundColor: colors.background,
     }
 });

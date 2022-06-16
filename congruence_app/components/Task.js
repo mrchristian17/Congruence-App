@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import colors from '../assets/colors/colors';
 
 const completedHandler = (currTask) => {
     if (!currTask.completed) return styles.incomplete;
@@ -19,13 +20,13 @@ const Task = (props) => {
                 <TouchableOpacity 
                 // onPress={() => handleAddTask()}
                 >
-                    <View style={[styles.actionIcon, {backgroundColor: '#C0C0C0'}]}>
-                        <Icon name="edit" size={20} color="white" />
+                    <View style={[styles.actionIcon, {backgroundColor: colors.secondary}]}>
+                        <Icon name="edit" size={20} color= {colors.white} />
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity>
-                    <View style={[styles.actionIcon, {backgroundColor: '#C0C0C0'}]}>
-                        <Icon name="delete" size={20} color="white" />
+                    <View style={[styles.actionIcon, {backgroundColor: colors.secondary}]}>
+                        <Icon name="delete" size={20} color= {colors.white} />
                     </View>
                 </TouchableOpacity>
             </View>
@@ -35,7 +36,7 @@ const Task = (props) => {
 
 const styles = StyleSheet.create({
     item: {
-        backgroundColor: '#FFF',
+        backgroundColor: colors.white,
         padding: 15,
         borderRadius: 10,
         flexDirection: 'row',
@@ -51,14 +52,14 @@ const styles = StyleSheet.create({
     incomplete: {
         width: 24, 
         height: 24,
-        backgroundColor: '#C0C0C0',
+        backgroundColor: colors.secondary,
         borderRadius: 5,
         marginRight: 15,
     },
     complete: {
         width: 24, 
         height: 24,
-        backgroundColor: '#008000',
+        backgroundColor: colors.primary,
         borderRadius: 5,
         marginRight: 15,
     },
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
     actionIcon: {
         height: 25,
         width: 25,
-        backgroundColor: '#000000',
+        backgroundColor: colors.white,
         justifyContent: 'center',
         alignItems: 'center',
         marginLeft: 5,
