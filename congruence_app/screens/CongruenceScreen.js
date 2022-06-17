@@ -1,96 +1,50 @@
 import React, {useState} from 'react';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
+import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 
-import moment from 'moment';
-import CalendarPicker from 'react-native-calendar-picker';
 import colors from '../assets/colors/colors';
+// const congruenceDay = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0];
 
-let congruenceDay = [1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0];
+const markedDates = () => {
+  // console.log('global', global.congruenceDay);
+  var daysOfYear = [];
+  var date = new Date();
+  for (var i = 0; i < 30; i++) {
+    //TODO: change to variable checking if all task for the day complete
+    if(i){
+      //global.congruenceDay[i]
+      daysOfYear.push(new Date(date).toISOString().split('T')[0]);
+    }
+    date.setDate(date.getDate() - 1);
+  }
+  let marked = {};
+
+  daysOfYear.forEach(day => {
+    marked[day] = {
+      selected: true,
+      selectedColor: colors.primary,
+    };
+  });
+  // console.log(marked)
+  return marked;
+}
 
 export default CongruenceScreen = () => {
-    const [selectedStartDate, setSelectedStartDate] = useState(null);
-    const [selectedEndDate, setSelectedEndDate] = useState(null);
-  
-    const onDateChange = (date, type) => {
-      //function to handle the date change
-      if (type === 'END_DATE') {
-        setSelectedEndDate(date);
-      } else {
-        setSelectedEndDate(null);
-        setSelectedStartDate(date);
-      }
-    };
-  
-    let today = moment();
-    let day = today.clone().startOf('month');
-    let customDatesStyles = [];
-    let i = 0
-  
-    while(day.add(1, 'day').isSame(today, 'month')) {
-      let circleColor = '';
-      let textColor = colors.black;
-      if(congruenceDay[i]) {
-        circleColor = colors.primary;
-        textColor = colors.white;
-      }
-      i+=1;
-      customDatesStyles.push({
-        date: day.clone(),
-        // Random colors
-        style: {backgroundColor: circleColor},
-        textStyle: {color: textColor}, // sets the font color
-        containerStyle: [], // extra styling for day container
-        allowDisabled: true, // allow custom style to apply to disabled dates
-      });
-    }
-  
-    return ( 
-      <SafeAreaView style={styles.container}>
-        <View style={styles.container}>
-          <CalendarPicker
-            customDatesStyles={customDatesStyles}
-            // startFromMonday={true}
-            // allowRangeSelection={true}
-            minDate={new Date(2021, 12, 1)}
-            maxDate={new Date(2050, 6, 3)}
-            weekdays={
-              [
-                'Sun',
-                'Mon', 
-                'Tue', 
-                'Wed', 
-                'Thur', 
-                'Fri', 
-                'Sat', 
-              ]}
-            months={[
-              'January',
-              'Febraury',
-              'March',
-              'April',
-              'May',
-              'June',
-              'July',
-              'August',
-              'September',
-              'October',
-              'November',
-              'December',
-            ]}
-            previousTitle="Previous"
-            nextTitle="Next"
-            todayBackgroundColor={colors.secondary}
-            selectedDayColor="transparent"
-            // selectedDayTextColor="#fff"
-            scaleFactor={375}
-            textStyle={{
-              fontFamily: 'ArialMT',
-              color: colors.black,
-            }}
-            onDateChange={onDateChange}
-          />
-        </View>
-      </SafeAreaView>
+    const today = new Date();
+    return (
+      <Calendar
+        // Cuts off date at T(ime)
+        maxDate={today.toISOString().split('T')[0]}
+        // onDayPress={day => {
+        //   console.log('selected day', day);
+        // }}
+        theme={{
+          arrowColor: colors.secondary,
+          todayTextColor: colors.black,
+          todayBackgroundColor: colors.background,
+        }}
+        markedDates={markedDates()}
+      ></Calendar>
     );
   }
 const styles = StyleSheet.create({

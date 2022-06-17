@@ -1,12 +1,11 @@
 import React, {useState} from 'react';
 import { Keyboard, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import colors from '../assets/colors/colors';
 
 import Task from '../components/Task';
 import IconButton from '../components/CustomButton/IconButton'
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import colors from '../assets/colors/colors';
 
-export default CommittedActionsScreen = () => {
+export default CommittedActionsScreen = (props) => {
     const [task, setTask] = useState();
     const [taskItems, setTaskItems] = useState([]);
       
@@ -27,12 +26,27 @@ export default CommittedActionsScreen = () => {
       }
       let itemsCopy = [...taskItems];
       setTaskItems(itemsCopy);
+      if(checkAllTasksComplete()) {
+        console.log('all tasks completed')
+      }
     }
 
     const deleteTask = (index) => {
       let itemsCopy = [...taskItems];
       itemsCopy.splice(index, 1);
       setTaskItems(itemsCopy)
+    }
+
+    const checkAllTasksComplete = () => {
+      var taskCompleted = true;
+      taskItems.forEach(task => {
+        if(!task.completed) {
+          taskCompleted = false;
+          return;
+        }
+        
+      });
+      return taskCompleted;
     }
 
     return (
@@ -45,9 +59,7 @@ export default CommittedActionsScreen = () => {
         >
   
           {/* Today's Task */}
-          <View style={styles.tasksWrapper}>
-            {/* <Text style={styles.sectionTitle}>Committed Actions</Text> */}
-  
+          <View style={styles.tasksWrapper}>  
             <View style={styles.items}>
               {/* This is where the tasks will go */}
               {

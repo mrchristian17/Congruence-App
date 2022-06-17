@@ -18,18 +18,6 @@ const Task = (props) => {
             </View>
             <View>
                 {props.deleteButton}
-                {/* <TouchableOpacity 
-                // onPress={() => handleAddTask()}
-                >
-                    <View style={[styles.actionIcon, {backgroundColor: colors.secondary}]}>
-                        <Icon name="edit" size={20} color= {colors.white} />
-                    </View>
-                </TouchableOpacity> */}
-                {/* <TouchableOpacity>
-                    <View style={[styles.actionIcon, {backgroundColor: colors.secondary}]}>
-                        <Icon name="edit" size={20} color= {colors.white} />
-                    </View>
-                </TouchableOpacity> */}
             </View>
         </View>
     )

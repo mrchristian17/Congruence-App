@@ -8,13 +8,13 @@ import CongruenceScreen from '../screens/CongruenceScreen';
 
 // const Stack = createNativeStackNavigator();
 
-const MainTabNavigator = () => {
+const MainTabNavigator = (props) => {
   const Tab = createBottomTabNavigator();
   return (
   <NavigationContainer>
     <Tab.Navigator>
-      <Tab.Screen name="Committed Actions" component={CommittedActionsScreen} />
-      <Tab.Screen name="Congruence" component={CongruenceScreen} />
+      <Tab.Screen name="Committed Actions" component={CommittedActionsScreen}/>
+      <Tab.Screen name="Congruence" component={CongruenceScreen }/>
     </Tab.Navigator>
   </NavigationContainer>
   
