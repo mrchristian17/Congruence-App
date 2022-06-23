@@ -11,7 +11,10 @@ export default function ManageAccount({ navigation }) {
   let [errorMessage, setErrorMessage] = React.useState("");
   let logout = () => {
     signOut(auth).then(() => {
-      navigation.popToTop();
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Start' }],
+      })
     });
   }
 

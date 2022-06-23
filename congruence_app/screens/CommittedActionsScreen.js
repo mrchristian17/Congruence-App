@@ -1,18 +1,50 @@
 import React, { useState } from 'react';
 import { Keyboard, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
+import { auth, db } from "../firebase";
+import { collection, addDoc, query, where, getDocs, deleteDoc, doc, setDoc  } from "firebase/firestore";
+
 import Task from '../components/Task';
 import IconButton from '../components/CustomButton/IconButton'
 import colors from '../assets/colors/colors';
 
-export default CommittedActionsScreen = (props) => {
+export default CommittedActionsScreen = ({ navigation }, props) => {
   const [task, setTask] = useState();
   const [taskItems, setTaskItems] = useState([]);
+  let [isLoading, setIsLoading] = React.useState(true);
 
+  let loadToDoList = async () => {
+    const q = query(collection(db, "todos"), where("userID", "==", auth.currentUser.uid));
 
-  const handleAddTask = () => {
+    const querySnapshot = await getDocs(q);
+    let taskDB= [];
+    querySnapshot.forEach((doc) => {
+      let currTask = doc.data();
+      currTask.id = doc.id;
+      taskDB.push(currTask);
+    });
+
+    setTaskItems(taskDB);
+    setIsLoading(false);
+    // setIsRefreshing(false);
+  };
+
+  if (isLoading) {
+    loadToDoList();
+  }
+
+  const handleAddTask = async () => {
     Keyboard.dismiss();
-    const newTask = { task: task, completed: false };
+    
+    const newTask = {
+      task: task,
+      completed: false,
+      userID: auth.currentUser.uid
+    };
+    
+    const docRef = await addDoc(collection(db, "todos"), newTask);
+
+    newTask.id = docRef.id;
     setTaskItems([...taskItems, newTask]);
     setTask(null);
   }
@@ -29,9 +61,13 @@ export default CommittedActionsScreen = (props) => {
     if (checkAllTasksComplete()) {
       console.log('all tasks completed')
     }
+
+    const toDoRef = doc(db, 'todos', taskItems[index].id);
+    setDoc(toDoRef, { completed: taskItems[index].completed }, { merge: true });
   }
 
-  const deleteTask = (index) => {
+  const deleteTask = async (index) => {
+    await deleteDoc(doc(db, "todos", taskItems[index].id));
     let itemsCopy = [...taskItems];
     itemsCopy.splice(index, 1);
     setTaskItems(itemsCopy)
@@ -63,14 +99,15 @@ export default CommittedActionsScreen = (props) => {
           <View style={styles.items}>
             {/* This is where the tasks will go */}
             {
+              
               taskItems.map((item, index) => {
                 return (
                   <TouchableOpacity key={index} onPress={() => completeTask(index)}>
                     <Task
                       text={item.task}
                       completed={item.completed}
-                      deleteButton={<IconButton icon="delete" onPress={() => deleteTask(index)}/>}
-                      editButton={<IconButton icon="edit" onPress={() => {}}/>}
+                      deleteButton={<IconButton icon="delete" onPress={() => deleteTask(index)} />}
+                      editButton={<IconButton icon="edit" onPress={() => { }} />}
                     />
                   </TouchableOpacity>
                 )

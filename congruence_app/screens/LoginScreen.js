@@ -40,14 +40,21 @@ export default function Login({ navigation }) {
         })
         .catch((error) => {
           setErrorMessage(error.message)
+          return;
         });
 
     } else if (email == "" || password == "") {
       setErrorMessage("Email or password cannot be blank");
+      return;
     }
     else {
       setErrorMessage("Please enter an email and password");
+      return;
     }
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Home' }],
+    })
   }
 
   return (

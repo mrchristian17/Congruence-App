@@ -14,38 +14,38 @@ import ManageAccountScreen from '../screens/ManageAccounts';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 function Home() {
-  
+
   return (
     <Tab.Navigator>
       <Tab.Screen name="Committed Actions" component={CommittedActionsScreen} />
       <Tab.Screen name="Congruence" component={CongruenceScreen} />
       <Tab.Screen name="Manage Account" component={ManageAccountScreen} />
-      </Tab.Navigator>
+    </Tab.Navigator>
   );
 }
 
 const MainTabNavigator = (props) => {
-  
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
           name="Start"
           component={StartScreen}
-          options={{headerShown: false}} /> 
+          options={{ headerShown: false }} />
         <Stack.Screen
           name="Login"
           component={LoginScreen}
-          options={{headerShown: false}} />
+          options={{ headerShown: false }} />
         <Stack.Screen
           name="SignUp"
           component={SignUpScreen}
-          options={{headerShown: false}} />
+          options={{ headerShown: false }} />
         <Stack.Screen
           name="ResetPassword"
           component={ResetPassword}
-          options={{headerShown: false}} />
-          <Stack.Screen
+          options={{ headerShown: false }} />
+        <Stack.Screen
           name="Home"
           component={Home}
           options={{ headerShown: false }}
