@@ -16,8 +16,9 @@ const Task = (props) => {
 
                 <Text style={styles.itemText}>{props.text}</Text>
             </View>
-            <View>
+            <View style={styles.buttonContainer}>
                 {props.deleteButton}
+                {props.editButton}
             </View>
         </View>
     )
@@ -64,6 +65,9 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         borderRadius: 3,
       },
+      buttonContainer: {
+          flexDirection: 'row',
+      }
 });
 
 export default Task;

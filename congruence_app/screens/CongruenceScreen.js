@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
-import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 
 import colors from '../assets/colors/colors';
 // const congruenceDay = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0];
@@ -11,7 +11,7 @@ const markedDates = () => {
   var date = new Date();
   for (var i = 0; i < 30; i++) {
     //TODO: change to variable checking if all task for the day complete
-    if(i){
+    if (i) {
       //global.congruenceDay[i]
       daysOfYear.push(new Date(date).toISOString().split('T')[0]);
     }
@@ -30,26 +30,26 @@ const markedDates = () => {
 }
 
 export default CongruenceScreen = () => {
-    const today = new Date();
-    return (
-      <Calendar
-        // Cuts off date at T(ime)
-        maxDate={today.toISOString().split('T')[0]}
-        // onDayPress={day => {
-        //   console.log('selected day', day);
-        // }}
-        theme={{
-          arrowColor: colors.secondary,
-          todayTextColor: colors.black,
-          todayBackgroundColor: colors.background,
-        }}
-        markedDates={markedDates()}
-      ></Calendar>
-    );
-  }
+  const today = new Date();
+  return (
+    <Calendar
+      // Cuts off date at T(ime)
+      maxDate={today.toISOString().split('T')[0]}
+      // onDayPress={day => {
+      //   console.log('selected day', day);
+      // }}
+      theme={{
+        arrowColor: colors.secondary,
+        todayTextColor: colors.black,
+        todayBackgroundColor: colors.background,
+      }}
+      markedDates={markedDates()}
+    ></Calendar>
+  );
+}
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: colors.background,
-    }
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+  }
 });
