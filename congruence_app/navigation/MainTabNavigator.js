@@ -17,7 +17,7 @@ function Home() {
 
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Committed Actions" component={CommittedActionsScreen} />
+      {/* <Tab.Screen name="Committed Actions" component={CommittedActionsScreen} /> */}
       <Tab.Screen name="Congruence" component={CongruenceScreen} />
       <Tab.Screen name="Manage Account" component={ManageAccountScreen} />
     </Tab.Navigator>
@@ -48,7 +48,12 @@ const MainTabNavigator = (props) => {
         <Stack.Screen
           name="Home"
           component={Home}
-          options={{ headerShown: false }}
+          // name="Home"
+          // component={CongruenceScreen}
+          options={{ 
+            headerShown: false,
+          //   unmountInactiveRoutes: true,
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>

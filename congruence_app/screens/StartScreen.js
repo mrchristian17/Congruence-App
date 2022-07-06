@@ -9,9 +9,9 @@ export default function StartScreen({ navigation }) {
   return (
     <BackgroundAuth>
       {/* <Logo /> */}
-      <Header>Welcome to Congruence App</Header>
+      <Header>Congruence App</Header>
       <Paragraph>
-        Some savage text
+        Welcome
       </Paragraph>
       <ButtonAuth
         mode="contained"

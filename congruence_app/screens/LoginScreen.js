@@ -29,7 +29,6 @@ export default function Login({ navigation }) {
   let [password, setPassword] = React.useState("");
 
   const login = () => {
-
     if (email !== "" && password !== "") {
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
