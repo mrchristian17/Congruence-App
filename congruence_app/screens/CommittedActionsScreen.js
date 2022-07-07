@@ -9,18 +9,25 @@ import Task from '../components/Task';
 import IconButton from '../components/CustomButton/IconButton'
 import colors from '../assets/colors/colors';
 
-export default CommittedActionsScreen = () => {
+export default CommittedActionsScreen = (props) => {
   const [task, setTask] = useState();
   const [taskItems, setTaskItems] = useState([]);
   let [isLoading, setIsLoading] = useState(true);
   let toDoPath = "todos/" +  auth.currentUser.uid + "/tasks/";
-  let todayDate = moment().format('YYYY-MM-DD');
+  let currentDate = props.currentDate;
   let dailyTasksPath = "/dailyTasks"
 
+  useEffect(() => {
+    if(props.reloadTasks) {
+      setIsLoading(true);
+    }
+    
+  }, [props])
+  console.log("loading status " + isLoading)
   let loadToDoList = async () => {
-
+    console.log("loading")
     // const q = query(collection(db, "todos"), where("userID", "==", auth.currentUser.uid));
-    const collectionSnapshot = collection(db, toDoPath + todayDate + dailyTasksPath);
+    const collectionSnapshot = collection(db, toDoPath + currentDate + dailyTasksPath);
     const querySnapshot = await getDocs(collectionSnapshot);
     let taskDB = [];
     querySnapshot.forEach((doc) => {
@@ -51,7 +58,7 @@ export default CommittedActionsScreen = () => {
       // userID: auth.currentUser.uid
     };
 
-    const docRef = await addDoc(toDoPath + todayDate + dailyTasksPath, newTask);
+    const docRef = await addDoc(collection(db, toDoPath + currentDate + dailyTasksPath), newTask);
 
     newTask.id = docRef.id;
     setTaskItems([...taskItems, newTask]);
@@ -71,12 +78,12 @@ export default CommittedActionsScreen = () => {
       console.log('all tasks completed')
     }
 
-    const toDoRef = doc(db, toDoPath + todayDate + dailyTasksPath, taskItems[index].id);
+    const toDoRef = doc(db, toDoPath + currentDate + dailyTasksPath, taskItems[index].id);
     setDoc(toDoRef, { completed: taskItems[index].completed }, { merge: true });
   }
 
   const deleteTask = async (index) => {
-    await deleteDoc(doc(db, toDoPath + todayDate + dailyTasksPath, taskItems[index].id));
+    await deleteDoc(doc(db, toDoPath + currentDate + dailyTasksPath, taskItems[index].id));
     let itemsCopy = [...taskItems];
     itemsCopy.splice(index, 1);
     setTaskItems(itemsCopy)
