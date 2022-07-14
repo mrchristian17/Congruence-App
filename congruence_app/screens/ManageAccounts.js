@@ -67,7 +67,7 @@ export default function ManageAccount({ navigation }) {
 
   return (
     <View style={AppStyles.container}>
-      <Text style={AppStyles.errorText}>{errorMessage}</Text>
+      {/* <Text style={AppStyles.errorText}>{errorMessage}</Text>
       <TextInput 
           style={[AppStyles.textInput, AppStyles.darkTextInput]} 
           placeholder='Current Password'
@@ -81,7 +81,7 @@ export default function ManageAccount({ navigation }) {
           secureTextEntry={true}
           onChangeText={setNewPassword} />
       <Button title="Update Password" onPress={updateUserPassword} />
-      <Button title="Delete User" onPress={deleteUserAndToDos} />
+      <Button title="Delete User" onPress={deleteUserAndToDos} /> */}
       <Button title="Logout" onPress={logout} />
       {/* <Button title="Back to ToDos" onPress={() => navigation.pop()} /> */}
     </View>

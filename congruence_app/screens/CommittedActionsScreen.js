@@ -3,7 +3,6 @@ import { Keyboard, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput
 
 import { auth, db } from "../firebase";
 import { collection, addDoc, query, where, getDocs, deleteDoc, doc, setDoc } from "firebase/firestore";
-import moment from "moment";
 
 import Task from '../components/Task';
 import IconButton from '../components/CustomButton/IconButton'
@@ -12,42 +11,30 @@ import colors from '../assets/colors/colors';
 export default CommittedActionsScreen = (props) => {
   const [task, setTask] = useState();
   const [taskItems, setTaskItems] = useState([]);
-  let [isLoading, setIsLoading] = useState(true);
-  let toDoPath = "todos/" +  auth.currentUser.uid + "/tasks/";
+  let toDoPath = "todos/" + auth.currentUser.uid + "/tasks/";
+  let congruencePath = "congruenceDates/" + auth.currentUser.uid + "/dates"
   let currentDate = props.currentDate;
   let dailyTasksPath = "/dailyTasks"
 
+  console.log("render CommittedAction component")
   useEffect(() => {
-    if(props.reloadTasks) {
-      setIsLoading(true);
+    const loadToDoList = async () => {
+
+      console.log(currentDate + " loading")
+
+      const collectionSnapshot = collection(db, toDoPath + currentDate + dailyTasksPath);
+      const querySnapshot = await getDocs(collectionSnapshot);
+      let taskDB = [];
+      querySnapshot.forEach((doc) => {
+        let currTask = doc.data();
+        currTask.id = doc.id;
+        taskDB.push(currTask);
+      });
+
+      setTaskItems(taskDB);
     }
-    
-  }, [props])
-  console.log("loading status " + isLoading)
-  let loadToDoList = async () => {
-    console.log("loading")
-    // const q = query(collection(db, "todos"), where("userID", "==", auth.currentUser.uid));
-    const collectionSnapshot = collection(db, toDoPath + currentDate + dailyTasksPath);
-    const querySnapshot = await getDocs(collectionSnapshot);
-    let taskDB = [];
-    querySnapshot.forEach((doc) => {
-      let currTask = doc.data();
-      currTask.id = doc.id;
-      taskDB.push(currTask);
-    });
-
-    setTaskItems(taskDB);
-    setIsLoading(false);
-    console.log(taskDB);
-    console.log(taskItems);
-    // setIsRefreshing(false);
-  };
-  // useEffect(() => {
-  if (isLoading) {
     loadToDoList();
-  }
-  // }, [])
-
+  }, [props]);
 
   const handleAddTask = async () => {
     Keyboard.dismiss();
@@ -75,9 +62,10 @@ export default CommittedActionsScreen = (props) => {
     let itemsCopy = [...taskItems];
     setTaskItems(itemsCopy);
     if (checkAllTasksComplete()) {
+      
       console.log('all tasks completed')
     }
-
+    props.onTaskCompletion(currentDate.slice())
     const toDoRef = doc(db, toDoPath + currentDate + dailyTasksPath, taskItems[index].id);
     setDoc(toDoRef, { completed: taskItems[index].completed }, { merge: true });
   }
@@ -89,71 +77,90 @@ export default CommittedActionsScreen = (props) => {
     setTaskItems(itemsCopy)
   }
 
-  const checkAllTasksComplete = () => {
-    var taskCompleted = true;
+  const checkAllTasksComplete = async () => {
+    var tasksCompleted = true;
+    console.log(taskItems)
     taskItems.forEach(task => {
+      console.log(task.task + " : " + task.completed)
       if (!task.completed) {
-        taskCompleted = false;
+        tasksCompleted = false;
         return;
       }
-
     });
-    return taskCompleted;
+
+    // console.log(tasksCompleted)
+    const collectionSnapshot = query(collection(db, congruencePath), where("date", "==", currentDate))
+    const querySnapshot = await getDocs(collectionSnapshot)
+    if (querySnapshot.empty) {
+      const newCongruenceDate = {
+        date: currentDate,
+        completed: tasksCompleted,
+      };
+      await addDoc(collection(db, congruencePath), newCongruenceDate);
+    }
+    else {
+      
+      querySnapshot.forEach((docSnapshot) => {
+        const congruenceDateRef = doc(db, congruencePath, docSnapshot.id)
+        setDoc(congruenceDateRef, { completed: tasksCompleted }, { merge: true });
+      });
+    }
+    return tasksCompleted;
   }
 
   return (
     <View style={styles.container}>
       {/* <View style={styles.temp}> */}
-        <ScrollView
-          contentContainerStyle={{
-            flexGrow: 1
-          }}
-          keyboardShouldPersistTaps='handled'
-        >
+      <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1
+        }}
+        keyboardShouldPersistTaps='handled'
+      >
 
-          {/* Today's Task */}
-          <View style={styles.tasksWrapper}>
-            <View style={styles.items}>
-              {/* This is where the tasks will go */}
-              {
+        {/* Today's Task */}
+        <View style={styles.tasksWrapper}>
+          <View style={styles.items}>
+            {/* This is where the tasks will go */}
+            {
 
-                taskItems.map((item, index) => {
-                  return (
-                    <TouchableOpacity key={index} onPress={() => completeTask(index)}>
-                      <Task
-                        text={item.task}
-                        completed={item.completed}
-                        deleteButton={<IconButton icon="delete" onPress={() => deleteTask(index)} />}
-                        editButton={<IconButton icon="edit" onPress={() => { }} />}
-                      />
-                    </TouchableOpacity>
-                  )
-                })
-              }
-            </View>
+              taskItems.map((item, index) => {
+                return (
+                  <TouchableOpacity key={index} onPress={() => completeTask(index)}>
+                    <Task
+                      text={item.task}
+                      completed={item.completed}
+                      deleteButton={<IconButton icon="delete" onPress={() => deleteTask(index)} />}
+                      editButton={<IconButton icon="edit" onPress={() => { }} />}
+                    />
+                  </TouchableOpacity>
+                )
+              })
+            }
           </View>
-        </ScrollView>
-        {/* Add Task */}
-        <View style={styles.writeTaskContainer}>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            // keyboardVerticalOffset={useHeaderHeight() + 100}
-            style={styles.writeTaskWrapper}
-          >
-            <TextInput
-              style={styles.input}
-              placeholder={'Add Action'}
-              value={task}
-              onChangeText={text => setTask(text)}
-            />
-
-            <TouchableOpacity onPress={() => handleAddTask()}>
-              <View style={styles.addWrapper}>
-                <Text style={styles.addText}>+</Text>
-              </View>
-            </TouchableOpacity>
-          </KeyboardAvoidingView>
         </View>
+      </ScrollView>
+      {/* Add Task */}
+      <View style={styles.writeTaskContainer}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          // keyboardVerticalOffset={useHeaderHeight() + 100}
+          style={styles.writeTaskWrapper}
+        >
+          <TextInput
+            style={styles.input}
+            placeholder={'Add Action'}
+            value={task}
+            onChangeText={text => setTask(text)}
+          />
+
+          <TouchableOpacity onPress={() => handleAddTask()}>
+            <View style={styles.addWrapper}>
+              <Text style={styles.addText}>+</Text>
+            </View>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
+      </View>
     </View>
   );
 }
