@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import moment from 'moment';
@@ -9,11 +9,13 @@ import colors from '../assets/colors/colors';
 import CommittedActionsScreen from '../screens/CommittedActionsScreen';
 
 export default CongruenceScreen = ({ navigation }) => {
-
+  const today = moment().format('YYYY-MM-DD');
   const [markedDates, setMarkedDates] = useState();
-  const [currentDate, setCurrentDate] = useState({ date: moment().format('YYYY-MM-DD') });
+  const [currentDate, setCurrentDate] = useState({ date: today });
   const [completedDate, setCompletedDate] = useState();
+  // const [isLoading, setIsLoading] = useState(true);
 
+  // initial load of marked dates from the database
   useEffect(() => {
     const loadCongruenceDates = async () => {
       const collectionSnapshot = collection(db, "congruenceDates/" + auth.currentUser.uid + "/dates");
@@ -32,6 +34,8 @@ export default CongruenceScreen = ({ navigation }) => {
     }
     loadCongruenceDates();
   },[])
+
+  // listener that waits for marked dates component to update
 
   useEffect(() => {
     console.log("update completion status")
@@ -57,16 +61,29 @@ export default CongruenceScreen = ({ navigation }) => {
   }, []);
 
   const marked = useMemo(() => {
+    //checks to see if markedDates state has been populated
+    //if not then method is not run
+    if(isEmpty(markedDates)) {
+      return;
+    }
+    console.log("updating marked dates---"+ currentDate.date)
+    let currBackgroundColor = 'white';
+    let currTextColor = 'black'
+
+    // check if current date is in marked date list and sets color accordingly
+    if(markedDates.hasOwnProperty(currentDate.date) && markedDates[currentDate.date].selected == true) {
+      currBackgroundColor = colors.primary;
+      currTextColor = 'white'
+    }
+    else if(currentDate.date == today) {
+      currBackgroundColor = colors.background
+    }
     return {
       ...markedDates, 
       [currentDate.date]: {
-        // selected: true,
-        // disableTouchEvent: true,
-        // selectedColor: colors.primary,
-        // selectedTextColor: 'white'
         customStyles: {
           container: {
-            backgroundColor: 'white',
+            backgroundColor: currBackgroundColor,
             elevation: 4,
             borderColor: 'black',
             borderWidth: 2
@@ -74,14 +91,17 @@ export default CongruenceScreen = ({ navigation }) => {
           text: {
             marginTop: 4,
             // fontSize: 11,
-            color: 'black'
+            color: currTextColor
           }
-        }
-        
+        } 
       }
-      
     };
-  }, [currentDate]);
+  }, [currentDate, markedDates]);
+
+  function isEmpty(ob){
+    for(var i in ob){ return false;}
+   return true;
+ }
 
   return (
     <View style={styles.container}>
