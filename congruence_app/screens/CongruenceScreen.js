@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import moment from 'moment';
@@ -11,7 +11,7 @@ import CommittedActionsScreen from '../screens/CommittedActionsScreen';
 export default CongruenceScreen = ({ navigation }) => {
 
   const [markedDates, setMarkedDates] = useState();
-  let [currentDate, setCurrentDate] = useState({ date: moment().format('YYYY-MM-DD') });
+  const [currentDate, setCurrentDate] = useState({ date: moment().format('YYYY-MM-DD') });
   const [completedDate, setCompletedDate] = useState();
 
   useEffect(() => {
@@ -52,21 +52,54 @@ export default CongruenceScreen = ({ navigation }) => {
     
   }, [completedDate]);
 
-  const today = new Date();
+  const onDayPress = useCallback((day) => {
+    setCurrentDate({ ...currentDate, date: day.dateString })
+  }, []);
+
+  const marked = useMemo(() => {
+    return {
+      ...markedDates, 
+      [currentDate.date]: {
+        // selected: true,
+        // disableTouchEvent: true,
+        // selectedColor: colors.primary,
+        // selectedTextColor: 'white'
+        customStyles: {
+          container: {
+            backgroundColor: 'white',
+            elevation: 4,
+            borderColor: 'black',
+            borderWidth: 2
+          },
+          text: {
+            marginTop: 4,
+            // fontSize: 11,
+            color: 'black'
+          }
+        }
+        
+      }
+      
+    };
+  }, [currentDate]);
+
   return (
     <View style={styles.container}>
       <Calendar
         // Cuts off date at T(ime)
         // maxDate={today.toISOString().split('T')[0]}
-        onDayPress={day => {
-          setCurrentDate({ ...currentDate, date: day.dateString })
-        }}
+        // onDayPress={day => {
+        //   setCurrentDate({ ...currentDate, date: day.dateString })
+        // }}
+        markingType='custom'
+        onDayPress={onDayPress}
         theme={{
           arrowColor: colors.secondary,
           todayTextColor: colors.black,
           todayBackgroundColor: colors.background,
+          
         }}
-        markedDates={markedDates}
+        markedDates={marked}
       />
       <CommittedActionsScreen currentDate={currentDate.date} onTaskCompletion={setCompletedDate}/>
     </View>

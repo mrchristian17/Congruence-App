@@ -79,7 +79,7 @@ export default CommittedActionsScreen = (props) => {
 
   const checkAllTasksComplete = async () => {
     var tasksCompleted = true;
-    console.log(taskItems)
+    console.log("task items: " + taskItems)
     taskItems.forEach(task => {
       console.log(task.task + " : " + task.completed)
       if (!task.completed) {

@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
-import React, { useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { auth } from "../firebase";
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 
@@ -12,21 +12,52 @@ import TextInputAuth from '../components/AuthComponents/TextInputAuth'
 import BackButton from '../components/AuthComponents/BackButton'
 import { theme } from '../core/theme'
 
+// const UserContext = createContext({})
+
+// function UserProvider({children}) {
+//   const [user, setUser] = useState(null)
+
+//   useEffect(() => {
+//     const unsusbscribe = onAuthStateChanged(auth, (user) => {
+//       setUser(user)
+//     });
+
+//     return () => unsusbscribe()
+//   }, [])
+
+//   return (
+//     <UserContext.Provider value={{ user }}>
+//       {children}
+//     </UserContext.Provider>
+//   )
+// }
+
+
 export default function Login({ navigation }) {
-
-  if (auth.currentUser) {
-    navigation.navigate("Home");
-  } else {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        navigation.navigate("Home");
-      }
-    });
-  }
-
   let [errorMessage, setErrorMessage] = React.useState("");
   let [email, setEmail] = React.useState("");
   let [password, setPassword] = React.useState("");
+
+  // const {user} = useContext(UserContext)
+
+  // useEffect(() => {
+  //   if (user) {
+  //     navigation.navigate("Home");
+  //   }
+  // }, [user])  
+  useEffect(() => {
+    if (auth.currentUser) {
+      navigation.navigate("Home");
+    } else {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          navigation.navigate("Home");
+        }
+      });
+    }
+  }, [])
+
+  
 
   const login = () => {
     if (email !== "" && password !== "") {
