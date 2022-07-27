@@ -1,18 +1,25 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import moment from 'moment';
+
 import { collection, getDocs } from "firebase/firestore";
 import { auth, db } from "../firebase";
 
 import colors from '../assets/colors/colors';
-import CommittedActionsScreen from '../screens/CommittedActionsScreen';
+import CommittedActionsScreen from './CommittedActionsScreen';
+import moment from 'moment';
+import { CongruenceContext } from '../App';
+
+// import CongruenceContextProvider from '../CongruenceContext';
+
 
 export default CongruenceScreen = ({ navigation }) => {
+  const { completedDate } = useContext(CongruenceContext);
+
   const today = moment().format('YYYY-MM-DD');
   const [markedDates, setMarkedDates] = useState();
   const [currentDate, setCurrentDate] = useState({ date: today });
-  const [completedDate, setCompletedDate] = useState();
+  // const [completedDate, setCompletedDate] = useState();
   // const [isLoading, setIsLoading] = useState(true);
 
   // initial load of marked dates from the database
@@ -38,19 +45,18 @@ export default CongruenceScreen = ({ navigation }) => {
   // listener that waits for marked dates component to update
 
   useEffect(() => {
-    console.log("update completion status")
     if(completedDate) {
-      if(markedDates[completedDate]) {
-        markedDates[completedDate].selected = !markedDates[completedDate].selected;
+      if(markedDates[completedDate.date]) {
+        markedDates[completedDate.date].selected = completedDate.completionStatus;
         setMarkedDates({...markedDates})
+        
       }
       else {
-        let newMarkedDate = {}
-        newMarkedDate[completedDate] = {
-          selected: currCongruenceDate.completed ? true : false,
+        markedDates[completedDate.date] = {
+          selected: completedDate.completionStatus,
           selectedColor: colors.primary,
         };
-        setMarkedDates({...markedDates, newMarkedDate})
+        setMarkedDates({...markedDates})
       }
     }
     
@@ -61,6 +67,7 @@ export default CongruenceScreen = ({ navigation }) => {
   }, []);
 
   const marked = useMemo(() => {
+    console.log("rerendering marked dates")
     //checks to see if markedDates state has been populated
     //if not then method is not run
     if(isEmpty(markedDates)) {
@@ -78,6 +85,7 @@ export default CongruenceScreen = ({ navigation }) => {
     else if(currentDate.date == today) {
       currBackgroundColor = colors.background
     }
+    console.log(markedDates)
     return {
       ...markedDates, 
       [currentDate.date]: {
@@ -105,6 +113,7 @@ export default CongruenceScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      {/* <CongruenceContextProvider> */}
       <Calendar
         // Cuts off date at T(ime)
         // maxDate={today.toISOString().split('T')[0]}
@@ -121,7 +130,8 @@ export default CongruenceScreen = ({ navigation }) => {
         }}
         markedDates={marked}
       />
-      <CommittedActionsScreen currentDate={currentDate.date} onTaskCompletion={setCompletedDate}/>
+      <CommittedActionsScreen currentDate={currentDate.date} />
+      {/* </CongruenceContextProvider> */}
     </View>
   );
 }

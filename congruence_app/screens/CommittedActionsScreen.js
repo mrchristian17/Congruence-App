@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Keyboard, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 import { auth, db } from "../firebase";
@@ -8,6 +8,8 @@ import Task from '../components/Task';
 import IconButton from '../components/CustomButton/IconButton'
 import colors from '../assets/colors/colors';
 
+import { CongruenceContext } from '../App';
+
 export default CommittedActionsScreen = (props) => {
   const [task, setTask] = useState();
   const [taskItems, setTaskItems] = useState([]);
@@ -15,6 +17,8 @@ export default CommittedActionsScreen = (props) => {
   let congruencePath = "congruenceDates/" + auth.currentUser.uid + "/dates"
   let currentDate = props.currentDate;
   let dailyTasksPath = "/dailyTasks"
+
+  const { setCompletedDate } = useContext(CongruenceContext);
 
   console.log("render CommittedAction component")
   useEffect(() => {
@@ -52,7 +56,7 @@ export default CommittedActionsScreen = (props) => {
     setTask(null);
   }
 
-  const completeTask = (index) => {
+  const completeTask = async (index) => {
     if (taskItems[index].completed) {
       taskItems[index].completed = false;
     }
@@ -61,11 +65,14 @@ export default CommittedActionsScreen = (props) => {
     }
     let itemsCopy = [...taskItems];
     setTaskItems(itemsCopy);
-    if (checkAllTasksComplete()) {
-      
-      console.log('all tasks completed')
+
+    let tasksCompleted = false;
+    console.log(checkAllTasksComplete())
+    if(await checkAllTasksComplete()) {
+      tasksCompleted = true
+      console.log("----all tasks completed---")
     }
-    props.onTaskCompletion(currentDate.slice())
+    setCompletedDate({date: currentDate.slice(), completionStatus: tasksCompleted});
     const toDoRef = doc(db, toDoPath + currentDate + dailyTasksPath, taskItems[index].id);
     setDoc(toDoRef, { completed: taskItems[index].completed }, { merge: true });
   }
@@ -80,6 +87,7 @@ export default CommittedActionsScreen = (props) => {
   const checkAllTasksComplete = async () => {
     var tasksCompleted = true;
     console.log("task items: " + taskItems)
+  
     taskItems.forEach(task => {
       console.log(task.task + " : " + task.completed)
       if (!task.completed) {
